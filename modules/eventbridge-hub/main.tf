@@ -1,7 +1,4 @@
 locals {
-  organisation_access_enabled = trim(var.organisation_access) != ""
-  account_access_enabled = length(var.account_access) > 0
-
   bus_permissions = var.organisation_access != null ? {
     # Use the module org access permissions if an org ID is provided
     "* OrgPutEvents" = {
@@ -87,12 +84,12 @@ module "hub_log_group" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "hub_log_group" {
-  policy_name     = "AllowEventBridgeToWriteToHubLogGroup"
+  policy_name     = "AllowEventBridgeToWriteToLogGroupForBus${var.bus_name}"
   policy_document = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowEventBridgeToWriteToHubLogGroup"
+        Sid       = "AllowEventBridgeToWriteToLogGroupForBus${var.bus_name}"
         Effect    = "Allow"
         Principal = {
           Service = "delivery.logs.amazonaws.com"

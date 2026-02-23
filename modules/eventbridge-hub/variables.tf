@@ -1,3 +1,8 @@
+locals {
+  organisation_access_enabled = trim(var.organisation_access) != ""
+  account_access_enabled = length(var.account_access) > 0
+}
+
 variable "organisation_access" {
   description = "Org ID allowed to put events to the bus. Alternative to account-id access."
   type        = string
