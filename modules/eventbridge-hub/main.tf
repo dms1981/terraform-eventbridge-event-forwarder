@@ -1,19 +1,17 @@
 locals {
-  bus_permissions = var.organisation_access != null ? {
-    # Use the module org access permissions if an org ID is provided
+  bus_permissions = local.organisation_access_enabled ? {
     "* OrgPutEvents" = {
       action         = "events:PutEvents"
       event_bus_name = var.bus_name
-      condition_org  = var.organisation_access
+      condition_org  = trimspace(var.organisation_access)
     }
-  } : {
-    # Account allow-list access
+  } : local.account_access_enabled ? {
     for acct in var.account_access :
     "${acct} PutEvents" => {
       action         = "events:PutEvents"
       event_bus_name = var.bus_name
     }
-  }
+  } : {}
 }
 
 module "hub_kms" {
