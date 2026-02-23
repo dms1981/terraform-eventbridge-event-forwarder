@@ -5,14 +5,14 @@ data "aws_orgs_organization" "current" {}
 module "eventbridge_hub_with_account_access" {
   source = "../../modules/eventbridge-hub"
 
-  bus_name       = "hub-bus"
+  bus_name       = "hub-bus-account-access"
   account_access = ["123456789012", "210987654321"]
 }
 
 module "eventbridge_hub_with_org_access" {
   source = "../../modules/eventbridge-hub"
 
-  bus_name            = "hub-bus"
+  bus_name            = "hub-bus-org-access"
   organisation_access = data.aws_orgs_organization.current.organization_id
 }
 
