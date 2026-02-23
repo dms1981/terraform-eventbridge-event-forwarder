@@ -5,7 +5,7 @@ locals {
       event_bus_name = var.bus_name
       condition_org  = trimspace(var.organisation_access)
     }
-  } : local.account_access_enabled ? {
+    } : local.account_access_enabled ? {
     for acct in var.account_access :
     "${acct} PutEvents" => {
       action         = "events:PutEvents"
@@ -18,11 +18,11 @@ module "hub_kms" {
   source  = "terraform-aws-modules/kms/aws"
   version = "~> 4.2"
 
-  aliases = ["${var.bus_name}/hub-kms"]
-  description = "KMS key for EventBridge bus ${var.bus_name}" 
+  aliases            = ["${var.bus_name}/hub-kms"]
+  description        = "KMS key for EventBridge bus ${var.bus_name}"
   key_administrators = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-  
-  
+
+
   key_statements = [
     {
       sid    = "AllowEventBridgeUseOfKeyForEventBuses"
@@ -82,23 +82,23 @@ module "hub_log_group" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "hub_log_group" {
-  policy_name     = "AllowEventBridgeToWriteToLogGroupForBus${var.bus_name}"
+  policy_name = "AllowEventBridgeToWriteToLogGroupForBus${var.bus_name}"
   policy_document = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowEventBridgeToWriteToLogGroupForBus${var.bus_name}"
-        Effect    = "Allow"
+        Sid    = "AllowEventBridgeToWriteToLogGroupForBus${var.bus_name}"
+        Effect = "Allow"
         Principal = {
           Service = "delivery.logs.amazonaws.com"
         }
-        Action    = [
+        Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
-          ]
-        Resource  = [
+        ]
+        Resource = [
           module.hub_log_group.cloudwatch_log_group_arn,
-          "${module.hub_log_group.cloudwatch_log_group_arn}:*"]
+        "${module.hub_log_group.cloudwatch_log_group_arn}:*"]
       }
     ]
   })

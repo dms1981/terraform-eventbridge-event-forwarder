@@ -1,6 +1,6 @@
 locals {
   organisation_access_enabled = trim(var.organisation_access) != ""
-  account_access_enabled = length(var.account_access) > 0
+  account_access_enabled      = length(var.account_access) > 0
 }
 
 variable "organisation_access" {
@@ -17,7 +17,7 @@ variable "account_access" {
 
 variable "bus_name" {
   description = "Name for the EventBridge bus to create. Must be unique within the region."
-  type = string
+  type        = string
   validation {
     condition     = !(local.organisation_access_enabled && local.account_access_enabled)
     error_message = "Cannot enable both organisation and account access simultaneously."
